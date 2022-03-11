@@ -1,0 +1,24 @@
+{
+  "name": "input.js",
+  "version": "1.0.0",
+  "description": "A lightweight package to keep track of pressed keys",
+  "main": "input-js.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FranciscoGaBe/input.js.git"
+  },
+  "keywords": [
+    "js",
+    "keyboard",
+    "key"
+  ],
+  "author": "Francisco Garrido",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FranciscoGaBe/input.js/issues"
+  },
+  "homepage": "https://github.com/FranciscoGaBe/input.js#readme"
+}
