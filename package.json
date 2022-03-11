@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/FranciscoGaBe/input.js/issues"
   },
-  "homepage": "https://github.com/FranciscoGaBe/input.js#readme"
+  "homepage": "https://github.com/FranciscoGaBe/input.js#readme",
+  "devDependencies": {
+    "jest": "^27.5.1"
+  }
 }
