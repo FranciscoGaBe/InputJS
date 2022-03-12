@@ -2,9 +2,9 @@
   "name": "input.js",
   "version": "1.0.0",
   "description": "A lightweight package to keep track of pressed keys",
-  "main": "input-js.js",
+  "main": "./src/Input-js.js",
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "keyboard",
     "key"
   ],
+  "type": "module",
   "author": "Francisco Garrido",
   "license": "MIT",
   "bugs": {
