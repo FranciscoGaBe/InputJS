@@ -1,24 +1,36 @@
 /**
- * 
- * @typedef {
- *  keys: Record<string, boolean>,
+ *
+ * @typedef {{
+ *  lastKeyPressed: string,
+ *  [key: string]: boolean
+ * }} Keys
+ *
+ * @typedef {{
+ *  keys: Keys,
  *  destroy: () => void
- * } InputJSIntance
- */
-
-/**
+ * }} InputJSInstance
  *
  * @param {HTMLElement} element
  * @returns {InputJSInstance}
  */
 const InputJS = (element) => {
-  const keys = new Proxy({}, {
-    get: (target, prop) => !!target[prop],
+  /** @type {Keys} */
+  const keys = new Proxy({
+    lastKeyPressed: '',
+  }, {
+    get: (...args) => {
+      const [target, prop] = args;
+      if (prop in target) return Reflect.get(...args);
+      return !!target[prop];
+    },
   });
 
   /** @type {Record<string, (event: KeyboardEvent) => void>} */
   const events = {
-    keydown: ({ code }) => { keys[code] = true; },
+    keydown: ({ code }) => {
+      keys[code] = true;
+      keys.lastKeyPressed = code;
+    },
     keyup: ({ code }) => { keys[code] = false; },
     blur: () => { Object.keys(keys).forEach((key) => { keys[key] = false; }); },
   };

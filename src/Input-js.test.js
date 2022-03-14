@@ -36,5 +36,11 @@ describe('InputJS', () => {
       expect(inputjs.keys.KeyW).toBe(false);
       expect(inputjs.keys.KeyA).toBe(false);
     });
+    it('keeps track of last pressed key in .lastKeyPressed', () => {
+      document.body.dispatchEvent(keyboardDown('KeyW'));
+      expect(inputjs.keys.lastKeyPressed).toBe('KeyW');
+      document.body.dispatchEvent(keyboardDown('KeyS'));
+      expect(inputjs.keys.lastKeyPressed).toBe('KeyS');
+    });
   });
 });
