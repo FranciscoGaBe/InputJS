@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input.js demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #f4f4f4;
+    }
+    #keyboard {
+      display: flex;
+      gap: 1rem;
+      width: fit-content;
+      margin: 0 auto;
+      background-color: #0F0F0F;
+      padding: 1.5rem 1rem;
+      border-radius: .5rem;
+    }
+    #keyboard .layout {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
+    #keyboard .row {
+      display: flex;
+      gap: .2rem;
+    }
+    #keyboard .key {
+      display: flex;
+      align-items: start;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      color: white;
+      padding-top: .4rem;
+      background-image: linear-gradient(#202020, #0F0F0F);
+      border-radius: .2rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: .7rem;
+      line-height: .45rem;
+      box-shadow: rgba(255, 255, 255, .8) 0px 2px 2px 1px;
+      transition: all .14s ease-in-out;
+      border: none;
+      cursor: pointer;
+    }
+    #keyboard .key.big {
+      width: auto;
+      flex-grow: 1;
+    }
+    #keyboard .key.pressed, #keyboard .key:active {
+      background-image: linear-gradient(rgb(219, 4, 69), rgb(185, 0, 56));
+      box-shadow: rgba(255, 255, 255, .8) 0px 1px 1px 0px;
+      transform: translateY(2px);
+    }
+    #keyboard .layout.main .row:first-child, #keyboard .layout.arrows .row:first-child {
+      margin-bottom: .7rem;
+    }
+    #keyboard .layout.main {
+      width: 32.8rem;
+    }
+    #keyboard .layout.main .row:first-child .key:first-child {
+      margin-right: 2.2rem;
+    }
+    #keyboard .layout.main .row:first-child .key:nth-child(4n + 5):not(:last-child) {
+      margin-right: auto;
+    }
+    #keyboard .layout.main .row:last-child .key:not(.big) {
+      width: 3rem;
+    }
+    #keyboard .layout.arrows .row:not(:nth-child(1n + 4)) .key,
+    #keyboard .layout.numpad .row:first-child .key:first-child,
+    #keyboard .layout.numpad .row:nth-child(4) .key:last-child {
+      font-size: .45rem;
+    }
+    #keyboard .layout.arrows .row:nth-child(4) {
+      justify-content: center;
+      margin-top: auto;
+    }
+    #keyboard .layout.numpad .row:first-child {
+      margin-top: auto;
+    }
+    #keyboard .layout.numpad .row:nth-child(2n + 2) {
+      position: relative;
+    }
+    #keyboard .layout.numpad .row:nth-child(2n + 2) .key:last-child {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 4.15rem;
+      padding-top: 1rem;
+    }
+    #keyboard .layout.numpad .row:last-child .key:last-child {
+      margin-right: 2.2rem;
+    }
+    #last-key {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="keyboard"></div>
+    <div id="last-key"></div>
+  </div>
+  <script defer type="module">
+    import InputJS from '../src/Input-js.js'
+
+    const inputjs = InputJS(document)
+    document.addEventListener('keydown', e => e.preventDefault())
+    const lastKeyElement = document.querySelector('#last-key')
+    const keyElements = {}
+    const setupKeybord = () => {
+      const toKeys = (charString) => charString.toUpperCase().split('').map(char => [`Key${char}`, char])
+      const toNumpadKeys = (numString) => numString.split('').map(num => [`Numpad${num}`, num])
+      const layout = {
+        main: [
+          [
+            ['Escape', 'ESC'],
+            ...Array(12).fill(0).map((_, index) => [`F${index + 1}`, `F${index + 1}`])
+          ],
+          [
+            ['Backquote', '`'],
+            ...'1234567890'.split('').map(num => [`Digit${num}`, num]),
+            ['Minus', '-'],
+            ['Equal', '='],
+            ['Backspace', '←', true]
+          ],
+          [
+            ['Tab', 'Tab', true],
+            ...toKeys('qwertyuiop'),
+            ['BracketLeft', '['],
+            ['BracketRight', ']'],
+            ['Backslash', '\\', true]
+          ],
+          [
+            ['CapsLock', 'CAPS', true],
+            ...toKeys('asdfghjkl'),
+            ['Semicolon', ';'],
+            ['Quote', '\''],
+            ['Enter', 'ENTER', true]
+          ],
+          [
+            ['ShiftLeft', 'Shift', true],
+            ...toKeys('zxcvbnm'),
+            ['Comma', ','],
+            ['Period', '.'],
+            ['Slash', '/'],
+            ['ShiftRight', 'Shift', true]
+          ],
+          [
+            ['ControlLeft', 'CTRL'],
+            ['MetaLeft', '⊞'],
+            ['AltLeft', 'Alt'],
+            ['Space', ' ', true],
+            ['AltRight', 'Alt'],
+            ['MetaRight', '⊞'],
+            ['ControlRight', 'CTRL']
+          ]
+        ],
+        arrows: [
+          [
+            ['PrintScreen', 'Print Screen'],
+            ['ScrollLock', 'Scroll Lock'],
+            ['Pause', 'Pause Break'],
+          ],
+          [
+            ['Insert', 'Ins'],
+            ['Home', 'Home'],
+            ['PageUp', 'PGUP'],
+          ],
+          [
+            ['Delete', 'Del'],
+            ['End', 'End'],
+            ['PageDown', 'PGDN'],
+          ],
+          [
+            ['ArrowUp', '▲']
+          ],
+          [
+            ['ArrowLeft', '◄'],
+            ['ArrowDown', '▼'],
+            ['ArrowRight', '►'],
+          ]
+        ],
+        numpad: [
+          [
+            ['NumLock', 'NUMLK'],
+            ['NumpadDivide', '/'],
+            ['NumpadMultiply', '*'],
+            ['NumpadSubtract', '-'],
+          ],
+          [
+            ...toNumpadKeys('789'),
+            ['NumpadAdd', '+'],
+          ],
+          [
+            ...toNumpadKeys('456'),
+          ],
+          [
+            ...toNumpadKeys('123'),
+            ['NumpadEnter', 'Enter'],
+          ],
+          [
+            ['Numpad0', '0', true],
+            ['NumpadDecimal', '.']
+          ],
+        ]
+      }
+
+      const keyboardElement = document.querySelector('#keyboard')
+      const layoutElement = document.createElement('div')
+      const rowElement = document.createElement('div')
+      const keyElement = document.createElement('button')
+
+      layoutElement.classList.add('layout')
+      rowElement.classList.add('row')
+      keyElement.classList.add('key')
+
+      Object.entries(layout).forEach(([className, rows]) => {
+        const layoutCopy = layoutElement.cloneNode(true)
+        layoutCopy.classList.add(className)
+        rows.forEach((row) => {
+          const rowCopy = rowElement.cloneNode(true)
+          rowCopy.classList.add(className)
+          row.forEach(code => {
+            const keyCopy = keyElement.cloneNode(true)
+            const [key, render, big = false] = code
+            if (big) keyCopy.classList.add('big')
+            keyCopy.appendChild(document.createTextNode(render))
+            keyElements[key] = keyCopy
+            keyCopy.addEventListener('click', () => inputjs.keys.lastKeyPressed = key)
+            rowCopy.appendChild(keyCopy)
+          })
+          layoutCopy.appendChild(rowCopy)
+        })
+        keyboardElement.appendChild(layoutCopy)
+      })
+
+    }
+    const checkKeys = () => {
+      Object.entries(inputjs.keys).forEach(([key, pressed]) => {
+        if (!keyElements[key]) return
+        if (pressed) keyElements[key].classList.add('pressed')
+        else keyElements[key].classList.remove('pressed')
+      })
+      lastKeyElement.innerHTML = inputjs.keys.lastKeyPressed
+      requestAnimationFrame(checkKeys)
+    }
+    setupKeybord()
+    checkKeys()
+  </script>
+</body>
+</html>
