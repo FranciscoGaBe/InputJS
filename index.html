@@ -14,7 +14,7 @@
       display: flex;
       gap: 1rem;
       width: fit-content;
-      margin: 0 auto;
+      margin: 1rem auto;
       background-color: #0F0F0F;
       padding: 1.5rem 1rem;
       border-radius: .5rem;
@@ -100,6 +100,42 @@
       text-align: center;
       font-size: 2rem;
       font-weight: bold;
+      height: 4rem;
+    }
+    #pointers {
+      display: flex;
+      padding: 1rem;
+    }
+    #mouse {
+      margin-left: auto;
+      background-color: #0F0F0F;
+      width: 12rem;
+      height: 20rem;
+      border-radius: 15rem 15rem 20rem 20rem;
+      overflow: hidden;
+    }
+    #mouse>:first-child {
+      display: flex;
+      height: 40%;
+      position: relative;
+      gap: .2rem;
+    }
+    #mouse>:first-child>div {
+      flex-grow: 1;
+      background-image: linear-gradient(#202020, #0F0F0F);
+      height: 100%;
+    }
+    #mouse>:first-child>div.pressed {
+      background-image: linear-gradient(rgb(219, 4, 69), rgb(185, 0, 56), #0F0F0F);
+    }
+    #mouse>:first-child>div:nth-child(2) {
+      z-index: 2;
+      position: absolute;
+      width: 2rem;
+      height: 4rem;
+      top: 2rem;
+      left: calc(50% - 1rem);
+      border: 3px solid #0F0F0F;
     }
   </style>
 </head>
@@ -107,6 +143,15 @@
   <div id="app">
     <div id="keyboard"></div>
     <div id="last-key"></div>
+    <div id="pointers">
+      <div id="mouse">
+        <div>
+          <div id="left-click"></div>
+          <div id="mouse-wheel"></div>
+          <div id="right-click"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <script defer type="module">
     import InputJS from '../src/Input-js.js'
@@ -115,6 +160,11 @@
     document.addEventListener('keydown', e => e.preventDefault())
     const lastKeyElement = document.querySelector('#last-key')
     const keyElements = {}
+    const mouseElements = [
+      document.querySelector('#left-click'),
+      document.querySelector('#mouse-wheel'),
+      document.querySelector('#right-click')
+    ]
     const setupKeybord = () => {
       const toKeys = (charString) => charString.toUpperCase().split('').map(char => [`Key${char}`, char])
       const toNumpadKeys = (numString) => numString.split('').map(num => [`Numpad${num}`, num])
@@ -250,6 +300,11 @@
         else keyElements[key].classList.remove('pressed')
       })
       lastKeyElement.innerHTML = inputjs.keys.lastKeyPressed
+      Object.entries(inputjs.mouse).forEach(([button, pressed]) => {
+        if (!mouseElements[button]) return
+        if (pressed) mouseElements[button].classList.add('pressed')
+        else mouseElements[button].classList.remove('pressed')
+      })
       requestAnimationFrame(checkKeys)
     }
     setupKeybord()
