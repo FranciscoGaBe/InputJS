@@ -1,12 +1,32 @@
 /** @jest-environment jsdom */
 import InputJS from './Input-js';
 
+function PointerEvent(...args) { return new MouseEvent(...args); }
+window.PointerEvent = PointerEvent;
+
 /**  @typedef {(code: string) => KeyboardEvent} KeyEvent */
 
 const keyboardEvent = (type, code) => new KeyboardEvent(type, { code });
 
 /** @type {KeyEvent} */ const keyboardDown = keyboardEvent.bind({}, 'keydown');
 /** @type {KeyEvent} */ const keyboardUp = keyboardEvent.bind({}, 'keyup');
+
+/**
+ *
+ * @param {string} device
+ * @param {string} type
+ * @param {any} data
+ */
+const fireEvent = (device, type, data) => {
+  const getEvent = () => {
+    switch (device) {
+      case 'keyboard': return new KeyboardEvent(type, { code: data });
+      case 'mouse': return new PointerEvent(type, { button: data });
+      default: return new Event(type, { details: data });
+    }
+  };
+  document.body.dispatchEvent(getEvent());
+};
 describe('InputJS', () => {
   /** @type {ReturnType<typeof InputJS>} */
   let inputjs = InputJS(document.body);
@@ -41,6 +61,24 @@ describe('InputJS', () => {
       expect(inputjs.keys.lastKeyPressed).toBe('KeyW');
       document.body.dispatchEvent(keyboardDown('KeyS'));
       expect(inputjs.keys.lastKeyPressed).toBe('KeyS');
+    });
+  });
+  describe('.mouse', () => {
+    it('keeps tracks of currently pressed mouse buttons', () => {
+      fireEvent('mouse', 'mousedown', 1);
+      expect(inputjs.mouse[1]).toBe(true);
+      fireEvent('mouse', 'mouseup', 1);
+      expect(inputjs.mouse[1]).toBe(false);
+    });
+    it('keeps tracks of currently pressed mouse buttons', () => {
+      expect(inputjs.mouse[1]).toBe(false);
+    });
+    it('sets all buttons to false when onBlur', () => {
+      fireEvent('mouse', 'mousedown', 1);
+      fireEvent('mouse', 'mousedown', 0);
+      fireEvent('blur', 'blur');
+      expect(inputjs.mouse[1]).toBe(false);
+      expect(inputjs.mouse[0]).toBe(false);
     });
   });
 });

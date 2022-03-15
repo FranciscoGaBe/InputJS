@@ -6,7 +6,8 @@
  * }} Keys
  *
  * @typedef {{
- *  keys: Keys,
+ *  readonly keys: Keys,
+ *  readonly mouse: Record<string, boolean>,
  *  destroy: () => void
  * }} InputJSInstance
  *
@@ -24,6 +25,7 @@ const InputJS = (element) => {
       return !!target[prop];
     },
   });
+  const mouse = new Proxy({}, { get: (target, prop) => !!target[prop] });
 
   /** @type {Record<string, (event: KeyboardEvent) => void>} */
   const events = {
@@ -32,7 +34,16 @@ const InputJS = (element) => {
       keys.lastKeyPressed = code;
     },
     keyup: ({ code }) => { keys[code] = false; },
-    blur: () => { Object.keys(keys).forEach((key) => { keys[key] = false; }); },
+    mousedown: ({ button }) => { mouse[button] = true; },
+    mouseup: ({ button }) => { mouse[button] = false; },
+    blur: () => {
+      const toReset = [keys, mouse];
+
+      toReset.forEach((obj) => {
+        const myObj = obj;
+        Object.keys(obj).forEach((key) => { myObj[key] = false; });
+      });
+    },
   };
 
   Object.entries(events).forEach(([type, cb]) => {
@@ -41,6 +52,7 @@ const InputJS = (element) => {
 
   return {
     get keys() { return keys; },
+    get mouse() { return mouse; },
     destroy: () => {
       Object.entries(events).forEach(([type, cb]) => {
         element.removeEventListener(type, cb);
