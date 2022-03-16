@@ -1,9 +1,6 @@
 /** @jest-environment jsdom */
 import InputJS from './Input-js';
 
-function PointerEvent(...args) { return new MouseEvent(...args); }
-window.PointerEvent = PointerEvent;
-
 /**  @typedef {(code: string) => KeyboardEvent} KeyEvent */
 
 const keyboardEvent = (type, code) => new KeyboardEvent(type, { code });
@@ -21,7 +18,7 @@ const fireEvent = (device, type, data) => {
   const getEvent = () => {
     switch (device) {
       case 'keyboard': return new KeyboardEvent(type, { code: data });
-      case 'mouse': return new PointerEvent(type, { button: data });
+      case 'mouse': return new MouseEvent(type, { button: data });
       default: return new Event(type, { details: data });
     }
   };
