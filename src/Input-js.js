@@ -6,28 +6,39 @@
  * }} Keys
  *
  * @typedef {{
+ *  position: {
+ *    x: number,
+ *    y: number
+ *  },
+ *  [key: string]: boolean
+ * }} Mouse
+ *
+ * @typedef {{
  *  readonly keys: Keys,
- *  readonly mouse: Record<string, boolean>,
+ *  readonly mouse: Mouse,
  *  destroy: () => void
  * }} InputJSInstance
- *
+ */
+
+const generateProxy = (obj) => new Proxy(obj, {
+  get: (...args) => {
+    const [target, prop] = args;
+    if (prop in target) return Reflect.get(...args);
+    return !!target[prop];
+  },
+});
+
+/*
  * @param {HTMLElement} element
  * @returns {InputJSInstance}
  */
 const InputJS = (element) => {
   /** @type {Keys} */
-  const keys = new Proxy({
-    lastKeyPressed: '',
-  }, {
-    get: (...args) => {
-      const [target, prop] = args;
-      if (prop in target) return Reflect.get(...args);
-      return !!target[prop];
-    },
-  });
-  const mouse = new Proxy({}, { get: (target, prop) => !!target[prop] });
+  const keys = generateProxy({ lastKeyPressed: '' });
+  /** @type {Mouse} */
+  const mouse = generateProxy({ position: { x: 0, y: 0 } });
 
-  /** @type {Record<string, (event: KeyboardEvent) => void>} */
+  /** @type {Record<string, (event: Event) => void>} */
   const events = {
     keydown: ({ code }) => {
       keys[code] = true;
@@ -36,6 +47,12 @@ const InputJS = (element) => {
     keyup: ({ code }) => { keys[code] = false; },
     mousedown: ({ button }) => { mouse[button] = true; },
     mouseup: ({ button }) => { mouse[button] = false; },
+    mousemove: ({ clientX, clientY, currentTarget }) => {
+      mouse.position = {
+        x: clientX - (currentTarget.offsetLeft || 0),
+        y: clientY - (currentTarget.offsetTop || 0),
+      };
+    },
     blur: () => {
       const toReset = [keys, mouse];
 
@@ -47,7 +64,8 @@ const InputJS = (element) => {
   };
 
   Object.entries(events).forEach(([type, cb]) => {
-    element.addEventListener(type, cb);
+    const target = type.slice(0, 3) === 'key' ? document : element;
+    target.addEventListener(type, cb);
   });
 
   return {
@@ -55,7 +73,8 @@ const InputJS = (element) => {
     get mouse() { return mouse; },
     destroy: () => {
       Object.entries(events).forEach(([type, cb]) => {
-        element.removeEventListener(type, cb);
+        const target = type.slice(0, 3) === 'key' ? document : element;
+        target.removeEventListener(type, cb);
       });
     },
   };

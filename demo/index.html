@@ -6,9 +6,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Input.js demo</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    html, body, #app {
+      height: 100%;
+    }
     body {
       background-color: #f4f4f4;
+      padding: 2rem;
+    }
+    #app {
+      background-image: linear-gradient(#8d8b8b, #414141);
+      padding: 1rem;
+      border: 2px solid black;
     }
     #keyboard {
       display: flex;
@@ -137,6 +151,11 @@
       left: calc(50% - 1rem);
       border: 3px solid #0F0F0F;
     }
+    #mouse #position {
+      color: white;
+      text-align: center;
+      margin-top: 4rem;
+    }
   </style>
 </head>
 <body>
@@ -150,13 +169,14 @@
           <div id="mouse-wheel"></div>
           <div id="right-click"></div>
         </div>
+        <div id="position"></div>
       </div>
     </div>
   </div>
   <script defer type="module">
     import InputJS from '../src/Input-js.js'
 
-    const inputjs = InputJS(document)
+    const inputjs = InputJS(document.querySelector('#app'))
     document.addEventListener('keydown', e => e.preventDefault())
     const lastKeyElement = document.querySelector('#last-key')
     const keyElements = {}
@@ -165,7 +185,9 @@
       document.querySelector('#mouse-wheel'),
       document.querySelector('#right-click')
     ]
-    const setupKeybord = () => {
+    const mousePositionElement = document.querySelector('#mouse>#position')
+
+    const setupKeyboard = () => {
       const toKeys = (charString) => charString.toUpperCase().split('').map(char => [`Key${char}`, char])
       const toNumpadKeys = (numString) => numString.split('').map(num => [`Numpad${num}`, num])
       const layout = {
@@ -293,21 +315,29 @@
       })
 
     }
+    
     const checkKeys = () => {
-      Object.entries(inputjs.keys).forEach(([key, pressed]) => {
-        if (!keyElements[key]) return
-        if (pressed) keyElements[key].classList.add('pressed')
-        else keyElements[key].classList.remove('pressed')
+      const devices = [
+        { data: inputjs.keys, elements: keyElements },
+        { data: inputjs.mouse, elements: mouseElements },
+      ]
+      const { x: mouseX, y: mouseY } = inputjs.mouse.position
+
+      devices.forEach(({ data, elements }) => {
+        Object.entries(data).forEach(([key, pressed]) => {
+          if (!elements[key]) return
+          if (pressed) elements[key].classList.add('pressed')
+          else elements[key].classList.remove('pressed')
+        })
       })
+
       lastKeyElement.innerHTML = inputjs.keys.lastKeyPressed
-      Object.entries(inputjs.mouse).forEach(([button, pressed]) => {
-        if (!mouseElements[button]) return
-        if (pressed) mouseElements[button].classList.add('pressed')
-        else mouseElements[button].classList.remove('pressed')
-      })
+      mousePositionElement.innerHTML = `x: ${ mouseX } y: ${ mouseY }`
+
       requestAnimationFrame(checkKeys)
     }
-    setupKeybord()
+
+    setupKeyboard()
     checkKeys()
   </script>
 </body>
