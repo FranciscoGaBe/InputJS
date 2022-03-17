@@ -18,11 +18,14 @@
     body {
       background-color: #f4f4f4;
       padding: 2rem;
+      overflow: hidden;
     }
     #app {
       background-image: linear-gradient(#8d8b8b, #414141);
       padding: 1rem;
       border: 2px solid black;
+      display: flex;
+      flex-direction: column;
     }
     #keyboard {
       display: flex;
@@ -119,6 +122,7 @@
     #pointers {
       display: flex;
       padding: 1rem;
+      margin-top: auto;
     }
     #mouse {
       margin-left: auto;
@@ -156,6 +160,25 @@
       text-align: center;
       margin-top: 4rem;
     }
+    #joystick {
+      width: 20rem;
+      height: 20rem;
+      border-radius: 100%;
+      position: relative;
+    }
+    #joystick #thumb {
+      width: 10rem;
+      height: 10rem;
+      background-image: radial-gradient(#202020 20%, #0F0F0F);
+      border-radius: 100%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+    }
+    #joystick-data {
+      color: white;
+      text-align: center;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -163,6 +186,12 @@
     <div id="keyboard"></div>
     <div id="last-key"></div>
     <div id="pointers">
+      <div>
+        <div id="joystick">
+          <div id="thumb"></div>
+        </div>
+        <div id="joystick-data"></div>
+      </div>
       <div id="mouse">
         <div>
           <div id="left-click"></div>
@@ -176,7 +205,7 @@
   <script defer type="module">
     import InputJS from '../src/Input-js.js'
 
-    const inputjs = InputJS(document.querySelector('#app'))
+    const inputjs = InputJS(document.querySelector('#app'), { threshold: 160 })
     document.addEventListener('keydown', e => e.preventDefault())
     const lastKeyElement = document.querySelector('#last-key')
     const keyElements = {}
@@ -186,6 +215,9 @@
       document.querySelector('#right-click')
     ]
     const mousePositionElement = document.querySelector('#mouse>#position')
+    const joystickElement = document.querySelector('#joystick')
+    const thumbElement = document.querySelector('#joystick>#thumb')
+    const joystickDataElement = document.querySelector('#joystick-data')
 
     const setupKeyboard = () => {
       const toKeys = (charString) => charString.toUpperCase().split('').map(char => [`Key${char}`, char])
@@ -321,7 +353,9 @@
         { data: inputjs.keys, elements: keyElements },
         { data: inputjs.mouse, elements: mouseElements },
       ]
+      const { joystick } = inputjs
       const { x: mouseX, y: mouseY } = inputjs.mouse.position
+      const { x: horizontal, y: vertical } = joystick.normalized
 
       devices.forEach(({ data, elements }) => {
         Object.entries(data).forEach(([key, pressed]) => {
@@ -333,6 +367,20 @@
 
       lastKeyElement.innerHTML = inputjs.keys.lastKeyPressed
       mousePositionElement.innerHTML = `x: ${ mouseX } y: ${ mouseY }`
+
+      const verticalPos = 50 + (vertical * 40) + '%'
+      const horizontalPos = 50 + (horizontal * 40) + '%'
+      joystickElement.style.backgroundImage = `
+        radial-gradient(circle at ${horizontalPos} ${verticalPos}, #202020 40%, #0F0F0F)
+      `
+      thumbElement.style.top = verticalPos
+      thumbElement.style.left = horizontalPos
+
+      joystickDataElement.innerHTML = `
+        <p>Start: ${JSON.stringify(joystick.start)}</p>
+        <p>Current: ${JSON.stringify(joystick.current)}</p>
+        <p>Move: ${JSON.stringify(joystick.move)}</p>
+      `
 
       requestAnimationFrame(checkKeys)
     }
