@@ -46,6 +46,7 @@ const generateProxy = (obj) => new Proxy(obj, {
 });
 
 const clamp = (value, min, max) => Math.max(Math.min(value, max), min);
+const round = (value) => Math.round(value * 100) / 100;
 const getMagnitude = (x, y) => Math.sqrt(x ** 2 + y ** 2);
 const getZeroPosition = () => ({ x: 0, y: 0 });
 
@@ -108,11 +109,11 @@ const InputJS = (element, options = {}) => {
     const magnitude = getMagnitude(horizontal, vertical) || 1;
     const getNormalized = (value) => {
       const abs = Math.abs(value);
-      const normalized = Math.floor((abs * 100) / magnitude) / 100;
+      const normalized = round(abs / magnitude);
       return clamp(abs, 0, normalized) * Math.sign(value);
     };
-    joystick.vertical = vertical;
-    joystick.horizontal = horizontal;
+    joystick.vertical = round(vertical);
+    joystick.horizontal = round(horizontal);
     joystick.normalized = {
       x: getNormalized(horizontal),
       y: getNormalized(vertical),
@@ -120,8 +121,8 @@ const InputJS = (element, options = {}) => {
   };
 
   const getMousePosition = ({ clientX, clientY }) => ({
-    x: clientX - (element.offsetLeft || 0),
-    y: clientY - (element.offsetTop || 0),
+    x: round(clientX - (element.offsetLeft || 0)),
+    y: round(clientY - (element.offsetTop || 0)),
   });
 
   /** @type {Record<string, (event: Event) => void>} */
@@ -154,8 +155,8 @@ const InputJS = (element, options = {}) => {
       if (joystick.active) {
         joystick.current = getMousePosition(event);
         joystick.move = {
-          x: joystick.current.x - joystick.start.x,
-          y: joystick.current.y - joystick.start.y,
+          x: round(joystick.current.x - joystick.start.x),
+          y: round(joystick.current.y - joystick.start.y),
         };
         setAxis();
       }
