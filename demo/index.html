@@ -16,25 +16,35 @@
       height: 100%;
     }
     body {
-      background-color: #f4f4f4;
-      padding: 2rem;
+      background-color: rgb(88, 2, 17);
       overflow: hidden;
     }
     #app {
-      background-image: linear-gradient(#8d8b8b, #414141);
-      padding: 1rem;
-      border: 2px solid black;
+      background-color: rgb(17, 17, 17);
+      border: 6px solid rgb(131, 3, 24);
+      border-radius: 1.5rem;
+      box-shadow: #0F0F0F 0px 0px 5px 0px inset;
+      overflow: auto;
+    }
+    #mat {
       display: flex;
       flex-direction: column;
+      height: 100%;
+      min-width: fit-content;
+      width: 100%;
+    }
+    #keyboard, #joystick, #mouse {
+      box-shadow: rgba(255, 255, 255, .2) 0px 0px 5px 0px;
     }
     #keyboard {
       display: flex;
       gap: 1rem;
       width: fit-content;
-      margin: 1rem auto;
-      background-color: #0F0F0F;
+      margin: 2rem auto 0;
+      background-image: linear-gradient(#141414, #0F0F0F);
       padding: 1.5rem 1rem;
       border-radius: .5rem;
+      position: relative;
     }
     #keyboard .layout {
       display: flex;
@@ -113,11 +123,26 @@
     #keyboard .layout.numpad .row:last-child .key:last-child {
       margin-right: 2.2rem;
     }
+    #last-key-container {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      background-image: linear-gradient(rgb(32, 32, 32), #141414);
+      padding: .5rem .5rem 0 .5rem;
+      transform: translate(-50%, -100%) rotateX(30deg);
+      border-radius: .3rem .3rem 0 0;
+      box-shadow: rgba(0, 0, 0, .3) 0px -2px 2px 0px;
+    }
     #last-key {
       text-align: center;
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: bold;
-      height: 4rem;
+      height: 2rem;
+      line-height: 2rem;
+      width: 14rem;
+      color: rgb(10, 10, 10);
+      background-image: linear-gradient(#6b5d5d, #4b4040);
+      border-radius: .2rem;
     }
     #pointers {
       display: flex;
@@ -126,7 +151,7 @@
     }
     #mouse {
       margin-left: auto;
-      background-color: #0F0F0F;
+      background-image: radial-gradient(circle at 50% 70%, #202020, #0F0F0F 60%);
       width: 12rem;
       height: 20rem;
       border-radius: 15rem 15rem 20rem 20rem;
@@ -136,24 +161,33 @@
       display: flex;
       height: 40%;
       position: relative;
-      gap: .2rem;
     }
     #mouse>:first-child>div {
       flex-grow: 1;
-      background-image: linear-gradient(#202020, #0F0F0F);
       height: 100%;
     }
-    #mouse>:first-child>div.pressed {
-      background-image: linear-gradient(rgb(219, 4, 69), rgb(185, 0, 56), #0F0F0F);
-    }
     #mouse>:first-child>div:nth-child(2) {
-      z-index: 2;
       position: absolute;
-      width: 2rem;
-      height: 4rem;
+      width: 2.2rem;
+      height: 7rem;
       top: 2rem;
-      left: calc(50% - 1rem);
-      border: 3px solid #0F0F0F;
+      left: 50%;
+      transform: translate(-50%);
+      border: .4rem solid #171717;
+      border-bottom-width: 3rem;
+      border-top-width: .7rem;
+      border-radius: .3rem;
+      background-image: linear-gradient(#0F0F0F, #202020, #0F0F0F);
+      box-shadow: black 0px -3px 4px -2px;
+    }
+    #mouse>:first-child>div.pressed:first-child {
+      background-image: radial-gradient(circle at 100% 100%, rgb(185, 0, 56, .7) 60%, rgb(185, 0, 56, 1));
+    }
+    #mouse>:first-child>div.pressed:nth-child(2) {
+      background-image: linear-gradient(rgb(185, 0, 56, .7), rgb(185, 0, 56, 1), rgb(185, 0, 56, .7));
+    }
+    #mouse>:first-child>div.pressed:last-child {
+      background-image: radial-gradient(circle at 0% 100%, rgb(185, 0, 56, .7) 60%, rgb(185, 0, 56, 1));
     }
     #mouse #position {
       color: white;
@@ -161,8 +195,8 @@
       margin-top: 4rem;
     }
     #joystick {
-      width: 20rem;
-      height: 20rem;
+      width: 15rem;
+      height: 15rem;
       border-radius: 100%;
       position: relative;
     }
@@ -173,6 +207,7 @@
       border-radius: 100%;
       position: absolute;
       transform: translate(-50%, -50%);
+      box-shadow: #0F0F0F 0px 0px 5px 2px;
     }
     #joystick-data {
       color: white;
@@ -183,22 +218,25 @@
 </head>
 <body>
   <div id="app">
-    <div id="keyboard"></div>
-    <div id="last-key"></div>
-    <div id="pointers">
-      <div>
-        <div id="joystick">
-          <div id="thumb"></div>
-        </div>
-        <div id="joystick-data"></div>
+    <div id="mat">
+      <div id="keyboard">
+        <div id="last-key-container"><div id="last-key"></div></div>
       </div>
-      <div id="mouse">
+      <div id="pointers">
         <div>
-          <div id="left-click"></div>
-          <div id="mouse-wheel"></div>
-          <div id="right-click"></div>
+          <div id="joystick">
+            <div id="thumb"></div>
+          </div>
+          <div id="joystick-data"></div>
         </div>
-        <div id="position"></div>
+        <div id="mouse">
+          <div>
+            <div id="left-click"></div>
+            <div id="mouse-wheel"></div>
+            <div id="right-click"></div>
+          </div>
+          <div id="position"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -348,6 +386,16 @@
 
     }
     
+    const updateInnerHTML = (element, text) => {
+      if (element.innerHTML === text) return
+      element.innerHTML = text
+    }
+
+    const updateStyle = (element, property, value) => {
+      if (element.style[property] === value) return
+      element.style[property] = value
+    }
+
     const checkKeys = () => {
       const devices = [
         { data: inputjs.keys, elements: keyElements },
@@ -365,22 +413,29 @@
         })
       })
 
-      lastKeyElement.innerHTML = inputjs.keys.lastKeyPressed
-      mousePositionElement.innerHTML = `x: ${ mouseX } y: ${ mouseY }`
+      updateInnerHTML(lastKeyElement, inputjs.keys.lastKeyPressed || 'Press a key')
+      updateInnerHTML(mousePositionElement, `
+        <p>Position:</p>
+        <p>[${ mouseX }, ${ mouseY }]</p>
+      `)
 
       const verticalPos = 50 + (vertical * 40) + '%'
       const horizontalPos = 50 + (horizontal * 40) + '%'
-      joystickElement.style.backgroundImage = `
+      updateStyle(joystickElement, 'backgroundImage', `
         radial-gradient(circle at ${horizontalPos} ${verticalPos}, #202020 40%, #0F0F0F)
-      `
-      thumbElement.style.top = verticalPos
-      thumbElement.style.left = horizontalPos
+      `)
+      updateStyle(thumbElement, 'top', verticalPos)
+      updateStyle(thumbElement, 'left', horizontalPos)
 
-      joystickDataElement.innerHTML = `
-        <p>Start: ${JSON.stringify(joystick.start)}</p>
-        <p>Current: ${JSON.stringify(joystick.current)}</p>
-        <p>Move: ${JSON.stringify(joystick.move)}</p>
-      `
+      const joystickData = [
+        { key: 'start', name: 'Start' },
+        { key: 'current', name: 'Current' },
+        { key: 'move', name: 'Move' },
+      ]
+      updateInnerHTML(joystickDataElement, joystickData.reduce((html, { key, name }) => {
+        const { x, y } = joystick[key]
+        return `${html}<p>${name}: [${x}, ${y}]</p>`
+      }, ''))
 
       requestAnimationFrame(checkKeys)
     }
