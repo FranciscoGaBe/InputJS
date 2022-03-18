@@ -135,13 +135,13 @@ const InputJS = (element, options = {}) => {
       keys[code] = false;
       setAxis();
     },
-    mousedown: (event) => {
+    pointerdown: (event) => {
       mouse[event.button] = true;
       joystick.active = true;
       joystick.start = getMousePosition(event);
       setAxis();
     },
-    mouseup: ({ button }) => {
+    pointerup: ({ button }) => {
       mouse[button] = false;
       joystick.active = false;
       joystick.move = getZeroPosition();
@@ -149,7 +149,7 @@ const InputJS = (element, options = {}) => {
       joystick.current = getZeroPosition();
       setAxis();
     },
-    mousemove: (event) => {
+    pointermove: (event) => {
       mouse.position = getMousePosition(event);
       if (joystick.active) {
         joystick.current = getMousePosition(event);
@@ -169,6 +169,9 @@ const InputJS = (element, options = {}) => {
       });
     },
   };
+
+  const styles = element.style;
+  styles.touchAction = 'none';
 
   Object.entries(events).forEach(([type, cb]) => {
     const target = type.slice(0, 3) === 'key' ? document : element;
