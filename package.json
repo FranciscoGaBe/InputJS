@@ -15,7 +15,6 @@
     "keyboard",
     "key"
   ],
-  "type": "module",
   "author": "Francisco Garrido",
   "license": "MIT",
   "bugs": {
@@ -28,5 +27,7 @@
     "eslint-plugin-import": "2.25.2",
     "eslint-plugin-jest": "^26.1.1",
     "jest": "^27.5.1"
-  }
+  },
+  "types": "./InputJS.d.ts",
+  "type": "module"
 }
