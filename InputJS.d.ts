@@ -3,13 +3,11 @@ type Vector2 = {
   y: number
 }
 type Keys = {
-  lastKeyPressed: string,
-  [key: string]: boolean
-}
+  lastKeyPressed: string
+} & Record<string, boolean>
 type Mouse = {
-  position: Vector2,
-  [key: string]: boolean
-}
+  position: Vector2
+} & Record<string, boolean>
 type Joystick = {
   active: boolean,
   start: Vector2,
@@ -28,5 +26,5 @@ type InputJSInstance = {
   readonly joystick: Joystick,
   destroy: () => void
 }
-declare const InputJS: (element: HTMLElement, options: Options = {}) => InputJSInstance
+declare const InputJS: (element: HTMLElement, options?: Options) => InputJSInstance
 export default InputJS
