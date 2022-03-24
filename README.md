@@ -1,85 +1,85 @@
-# input.js
+# JSIT (JavaScript Input Tracker)
 
 A lightweight package to keep track of keys and mouse buttons being pressed. Made for game development, where keys are checked by a set interval.
 
 ## Installation
 ```bash
 // with npm
-npm install input.js
+npm install jsit
 
 // with yarn
-yarn add input.js
+yarn add jsit
 ```
 
 ## Demo
-A small demo can be seen in the following link: [Demo](https://franciscogabe.github.io/input.js/)
+A small demo can be seen in the following link: [Demo](https://franciscogabe.github.io/JSIT/)
 
 ## How to use
-Accepts a HTML Element and returns an instance of input.js
+Accepts a HTML Element and returns an instance of JSIT
 ```JS
-import InputJS from 'input.js'
+import JSIT from 'jsit'
 
 const element = document.querySelector('#game')
-const inputjs = InputJS(element)
+const jsit = JSIT(element)
 ```
 
-### InputJS.keys
+### JSIT.keys
 A readonly object where they keys are the keycode of the key being pressed, it's value is `true` for a pressed key or `false` by default.
 
 ```JS
-import InputJS from 'input.js'
+import JSIT from 'jsit'
 
 const element = document.querySelector('#game')
-const inputjs = InputJS(element)
+const jsit = JSIT(element)
 
 const update = () => {
-  if (inputjs.keys.KeyW) console.log('W is pressed!')
+  if (jsit.keys.KeyW) console.log('W is pressed!')
   else console.log('W is not pressed!')
   requestAnimationFrame(update)
 }
 update()
 ```
 
-### InputJS.mouse
+### JSIT.mouse
 A readonly object where they keys are the mouse button number, it's value is `true` for a pressed button or `false` by default.
 
 ```JS
-import InputJS from 'input.js'
+import JSIT from 'jsit'
 
 const element = document.querySelector('#game')
-const inputjs = InputJS(element)
+const jsit = JSIT(element)
 
 const update = () => {
-  if (inputjs.mouse[0]) console.log('Left click is pressed!')
+  if (jsit.mouse[0]) console.log('Left click is pressed!')
   else console.log('Left click is not pressed!')
   requestAnimationFrame(update)
 }
 update()
 ```
 
-### InputJS.joystick
+### JSIT.joystick
 A readonly object to simulate a joystick by using "wasd", arrow keys or mouse/pointer.
 
 #### Enable mouse/pointer/touch movement
 By default joystick only works with "wasd" and arrow keys, to enable it to work with a pointer, a threshold has to be specified in the options object.
 
 ```JS
-import InputJS from 'input.js'
+import JSIT from 'jsit'
 
 const element = document.querySelector('#game')
 // How many pixels away the pointer has to move from the starting position
 const options = { threshold: 300 }
-const inputjs = InputJS(element, options)
+const jsit = JSIT(element, options)
 ```
 
 #### Structure
 ```JS
-import InputJS from 'input.js'
+import JSIT from 'jsit'
 
 const element = document.querySelector('#game')
 // How many pixels away the pointer has to move from the starting position
 const options = { threshold: 300 }
-const { joystick } = InputJS(element, options)
+const { joystick } = JSIT(element, options)
 const { axis } = joystick
 
 joystick.active
