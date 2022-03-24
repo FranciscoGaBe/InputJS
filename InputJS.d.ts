@@ -8,14 +8,18 @@ type Keys = {
 type Mouse = {
   position: Vector2
 } & Record<string, boolean>
+type JoystickAxis = {
+  vertical: number,
+  horizontal: number,
+  normalized: Vector2,
+  clamped: Vector2
+}
 type Joystick = {
   active: boolean,
   start: Vector2,
   current: Vector2,
   move: Vector2
-  vertical: number,
-  horizontal: number,
-  normalized: Vector2
+  axis: JoystickAxis
 }
 type Options = {
   threshold: number
