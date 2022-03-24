@@ -1,6 +1,6 @@
 {
   "name": "jsit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A lightweight package to keep track of keyboard, mouse and pointer inputs",
   "main": "./src/JSIT.js",
   "scripts": {
