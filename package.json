@@ -1,26 +1,29 @@
 {
-  "name": "input.js",
+  "name": "jsit",
   "version": "1.0.0",
-  "description": "A lightweight package to keep track of pressed keys",
-  "main": "./src/Input-js.js",
+  "description": "A lightweight package to keep track of keyboard, mouse and pointer inputs",
+  "main": "./src/JSIT.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FranciscoGaBe/input.js.git"
+    "url": "git+https://github.com/FranciscoGaBe/JSIT.git"
   },
   "keywords": [
-    "js",
     "keyboard",
-    "key"
+    "key",
+    "input",
+    "mouse",
+    "pointer",
+    "joystick"
   ],
   "author": "Francisco Garrido",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FranciscoGaBe/input.js/issues"
+    "url": "https://github.com/FranciscoGaBe/JSIT/issues"
   },
-  "homepage": "https://github.com/FranciscoGaBe/input.js#readme",
+  "homepage": "https://github.com/FranciscoGaBe/JSIT#readme",
   "devDependencies": {
     "eslint": "8.2.0",
     "eslint-config-airbnb-base": "15.0.0",
@@ -28,6 +31,6 @@
     "eslint-plugin-jest": "^26.1.1",
     "jest": "^27.5.1"
   },
-  "types": "./InputJS.d.ts",
+  "types": "./JSIT.d.ts",
   "type": "module"
 }

@@ -39,7 +39,7 @@
  *  readonly mouse: Mouse,
  *  readonly joystick: Joystick,
  *  destroy: () => void
- * }} InputJSInstance
+ * }} JSITInstance
  */
 
 const generateProxy = (obj) => new Proxy(obj, {
@@ -58,9 +58,9 @@ const getZeroPosition = () => ({ x: 0, y: 0 });
 /**
  * @param {HTMLElement} element
  * @param {Options} options
- * @returns {InputJSInstance}
+ * @returns {JSITInstance}
  */
-const InputJS = (element, options = {}) => {
+const JSIT = (element, options = {}) => {
   /** @type {Keys} */
   const keys = generateProxy({ lastKeyPressed: '' });
   /** @type {Mouse} */
@@ -120,7 +120,7 @@ const InputJS = (element, options = {}) => {
     const getClamped = (value, axis) => clamp(
       Math.abs(value),
       0,
-      joystickAxis.normalized[axis],
+      Math.abs(joystickAxis.normalized[axis]),
     ) * Math.sign(value);
     joystickAxis.vertical = round(vertical);
     joystickAxis.horizontal = round(horizontal);
@@ -130,7 +130,7 @@ const InputJS = (element, options = {}) => {
     };
     joystickAxis.clamped = {
       x: getClamped(horizontal, 'x'),
-      y: getClamped(vertical, 'x'),
+      y: getClamped(vertical, 'y'),
     };
   };
 
@@ -206,4 +206,4 @@ const InputJS = (element, options = {}) => {
   };
 };
 
-export default InputJS;
+export default JSIT;

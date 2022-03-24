@@ -16,13 +16,18 @@
  * }} Mouse
  *
  * @typedef {{
+ *  vertical: number,
+ *  horizontal: number,
+ *  normalized: Vector2,
+ *  clamped: Vector2
+ * }} JoystickAxis
+ *
+ * @typedef {{
  *  active: boolean,
  *  start: Vector2,
  *  current: Vector2,
  *  move: Vector2
- *  vertical: number,
- *  horizontal: number,
- *  normalized: Vector2,
+ *  axis: JoystickAxis
  * }} Joystick
  *
  * @typedef {{
@@ -34,7 +39,7 @@
  *  readonly mouse: Mouse,
  *  readonly joystick: Joystick,
  *  destroy: () => void
- * }} InputJSInstance
+ * }} JSITInstance
  */
 
 const generateProxy = (obj) => new Proxy(obj, {
@@ -53,22 +58,27 @@ const getZeroPosition = () => ({ x: 0, y: 0 });
 /**
  * @param {HTMLElement} element
  * @param {Options} options
- * @returns {InputJSInstance}
+ * @returns {JSITInstance}
  */
-const InputJS = (element, options = {}) => {
+const JSIT = (element, options = {}) => {
   /** @type {Keys} */
   const keys = generateProxy({ lastKeyPressed: '' });
   /** @type {Mouse} */
   const mouse = generateProxy({ position: getZeroPosition() });
+  /** @type {JoystickAxis} */
+  const joystickAxis = {
+    vertical: 0,
+    horizontal: 0,
+    normalized: getZeroPosition(),
+    clamped: getZeroPosition(),
+  };
   /** @type {Joystick} */
   const joystick = {
     active: false,
     start: getZeroPosition(),
     current: getZeroPosition(),
     move: getZeroPosition(),
-    vertical: 0,
-    horizontal: 0,
-    normalized: getZeroPosition(),
+    axis: joystickAxis,
   };
 
   const verticalKeys = [
@@ -86,14 +96,13 @@ const InputJS = (element, options = {}) => {
   const setAxis = () => {
     const getMouseJoystick = (axis) => {
       if (!options.threshold) return 0;
-      const move = joystick.move[axis === 'vertical' ? 'y' : 'x'];
-      const direction = Math.sign(move);
-      return Math.min(Math.abs(move) / options.threshold, 1) * direction;
+      const move = joystick.move[axis];
+      return Math.min(Math.abs(move) / options.threshold, 1) * Math.sign(move);
     };
     const vertical = clamp(
       verticalKeys.reduce(
         (a, b) => a + (keys[b.code] ? b.value : 0),
-        getMouseJoystick('vertical'),
+        getMouseJoystick('y'),
       ),
       -1,
       1,
@@ -101,22 +110,27 @@ const InputJS = (element, options = {}) => {
     const horizontal = clamp(
       horizontalKeys.reduce(
         (a, b) => a + (keys[b.code] ? b.value : 0),
-        getMouseJoystick('horizontal'),
+        getMouseJoystick('x'),
       ),
       -1,
       1,
     );
     const magnitude = getMagnitude(horizontal, vertical) || 1;
-    const getNormalized = (value) => {
-      const abs = Math.abs(value);
-      const normalized = round(abs / magnitude);
-      return clamp(abs, 0, normalized) * Math.sign(value);
-    };
-    joystick.vertical = round(vertical);
-    joystick.horizontal = round(horizontal);
-    joystick.normalized = {
+    const getNormalized = (value) => round(value / magnitude);
+    const getClamped = (value, axis) => clamp(
+      Math.abs(value),
+      0,
+      Math.abs(joystickAxis.normalized[axis]),
+    ) * Math.sign(value);
+    joystickAxis.vertical = round(vertical);
+    joystickAxis.horizontal = round(horizontal);
+    joystickAxis.normalized = {
       x: getNormalized(horizontal),
       y: getNormalized(vertical),
+    };
+    joystickAxis.clamped = {
+      x: getClamped(horizontal, 'x'),
+      y: getClamped(vertical, 'y'),
     };
   };
 
@@ -172,7 +186,7 @@ const InputJS = (element, options = {}) => {
   };
 
   const styles = element.style;
-  styles.touchAction = 'none';
+  if (styles) styles.touchAction = 'none';
 
   Object.entries(events).forEach(([type, cb]) => {
     const target = type.slice(0, 3) === 'key' ? document : element;
@@ -192,4 +206,4 @@ const InputJS = (element, options = {}) => {
   };
 };
 
-export default InputJS;
+export default JSIT;

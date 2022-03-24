@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Input.js demo</title>
+  <title>JSIT demo</title>
   <style>
     * {
       margin: 0;
@@ -247,9 +247,9 @@
     </div>
   </div>
   <script defer type="module">
-    import InputJS from './Input-js.js'
+    import JSIT from './JSIT.js'
 
-    const inputjs = InputJS(document.querySelector('#app'), { threshold: 160 })
+    const jsit = JSIT(document.querySelector('#app'), { threshold: 160 })
     document.addEventListener('keydown', e => e.preventDefault())
     const lastKeyElement = document.querySelector('#last-key')
     const keyElements = {}
@@ -382,7 +382,7 @@
             if (big) keyCopy.classList.add('big')
             keyCopy.appendChild(document.createTextNode(render))
             keyElements[key] = keyCopy
-            keyCopy.addEventListener('click', () => inputjs.keys.lastKeyPressed = key)
+            keyCopy.addEventListener('click', () => jsit.keys.lastKeyPressed = key)
             rowCopy.appendChild(keyCopy)
           })
           layoutCopy.appendChild(rowCopy)
@@ -404,12 +404,13 @@
 
     const checkKeys = () => {
       const devices = [
-        { data: inputjs.keys, elements: keyElements },
-        { data: inputjs.mouse, elements: mouseElements },
+        { data: jsit.keys, elements: keyElements },
+        { data: jsit.mouse, elements: mouseElements },
       ]
-      const { joystick } = inputjs
-      const { x: mouseX, y: mouseY } = inputjs.mouse.position
-      const { x: horizontal, y: vertical } = joystick.normalized
+      const { joystick } = jsit
+      const { axis } = joystick
+      const { x: mouseX, y: mouseY } = jsit.mouse.position
+      const { x: horizontal, y: vertical } = axis.clamped
 
       devices.forEach(({ data, elements }) => {
         Object.entries(data).forEach(([key, pressed]) => {
@@ -419,7 +420,7 @@
         })
       })
 
-      updateInnerHTML(lastKeyElement, inputjs.keys.lastKeyPressed || 'Press a key')
+      updateInnerHTML(lastKeyElement, jsit.keys.lastKeyPressed || 'Press a key')
       updateInnerHTML(mousePositionElement, `
         <p>Position:</p>
         <p>[${ mouseX }, ${ mouseY }]</p>

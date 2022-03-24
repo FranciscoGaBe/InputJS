@@ -24,11 +24,11 @@ type Joystick = {
 type Options = {
   threshold: number
 }
-type InputJSInstance = {
+type JSITInstance = {
   readonly keys: Keys,
   readonly mouse: Mouse,
   readonly joystick: Joystick,
   destroy: () => void
 }
-declare const InputJS: (element: HTMLElement, options?: Options) => InputJSInstance
+declare const InputJS: (element: HTMLElement, options?: Options) => JSITInstance
 export default InputJS
