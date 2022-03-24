@@ -72,27 +72,59 @@ const options = { threshold: 300 }
 const inputjs = InputJS(element, options)
 ```
 
-#### Joystick.active
-Is set to `true` or `false` whenever the joystick is being engaged by a pointer.
+#### Structure
+```JS
+import InputJS from 'input.js'
 
-#### Joystick.start
-When the joystick is active, it's value is the starting position of the gesture, otherwise it's value is set at 0.
-The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+const element = document.querySelector('#game')
+// How many pixels away the pointer has to move from the starting position
+const options = { threshold: 300 }
+const { joystick } = InputJS(element, options)
+const { axis } = joystick
 
-#### Joystick.current
-When the joystick is active, it's value is the current position of the gesture, otherwise it's value is set at 0.
-The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+joystick.active
+// Is set to `true` or `false` whenever the joystick is being engaged by a pointer.
 
-#### Joystick.move
-When the joystick is active, it's value is the difference between current and starting position, otherwise it's value is set at 0.
-The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+joystick.start
+/* When the joystick is active, it's value is the starting position of the
+ * gesture, otherwise it's value is set at 0.
+ * The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`. 
+ */
 
-#### Joystick.vertical
-Ranges from -1 to 1, KeyS and ArrowDown sets the value to 1, KeyW and ArrowUp sets the value to -1, if a threshold is supplied, the pointer vertical movement will also contribute to this value.
+joystick.current
+/* When the joystick is active, it's value is the current position of the
+ * gesture, otherwise it's value is set at 0.
+ * The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+ */
 
-#### Joystick.horizontal
-Ranges from -1 to 1, KeyD and ArrowRight sets the value to 1, KeyA and ArrowLeft sets the value to -1, if a threshold is supplied, the pointer horizontal movement will also contribute to this value.
+joystick.move
+/* When the joystick is active, it's value is the difference between current
+ * and starting position, otherwise it's value is set at 0.
+ * The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+ */
 
-#### Joystick.normalized
-A combination of vertical and horizontal movement, the magnitude of the vector created by both values won't surpass 1.
-The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+// joystick.axis
+axis.vertical
+/* Ranges from -1 to 1, KeyS and ArrowDown sets the value to 1, KeyW and
+ * ArrowUp sets the value to -1, if a threshold is supplied, the pointer
+ * vertical movement will also contribute to this value.
+ */
+
+axis.horizontal
+/* Ranges from -1 to 1, KeyD and ArrowRight sets the value to 1, KeyA and
+ * ArrowLeft sets the value to -1, if a threshold is supplied, the pointer
+ * horizontal movement will also contribute to this value.
+ */
+
+axis.normalized
+/* A combination of vertical and horizontal movement, the magnitude of the
+ * vector created by both values is 1.
+ * The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+ */
+
+axis.clamped
+/* A combination of vertical and horizontal movement, the magnitude of the
+ * vector created by both won't exceed 1.
+ * The value is supplied as an object with x and y keys `{ x: 0, y: 0 }`.
+ */
+```
